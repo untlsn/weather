@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
-import useSearchQuery, { type Bbox } from '~/composables/useSearchQuery';
+import useSearchQuery, { type Bbox, fetchSearchQuery } from '~/composables/useSearchQuery';
 import WeatherDisplay from '~/components/WeatherDisplay.vue';
 import { onClickOutside } from '@vueuse/core';
+import wait from '~/utils/wait';
 
 const inputValue = shallowRef('');
 const searchQuery = useSearchQuery(inputValue);
@@ -23,11 +24,18 @@ const applyCurrentLocation = () => {
 		};
 	});
 };
+const lazySelect = async () => {
+	rectangleCords.value = (await fetchSearchQuery(inputValue.value)).results[0].bbox;
+};
 </script>
 
 <template>
 	<main class="">
-		<div ref="search" class="w-fit absolute right-6 top-6">
+		<form
+			ref="search"
+			class="w-fit absolute right-6 top-6"
+			@submit.prevent="lazySelect"
+		>
 			<input
 				v-model="inputValue"
 				class="w-60 border text-white rounded px-4 h-10"
@@ -35,10 +43,16 @@ const applyCurrentLocation = () => {
 			>
 			<button
 				type="button"
-				class="size-10 rounded-lg border text-white ml-4"
+				class="size-10 rounded-lg border text-white ml-2 mr-4"
 				@click="applyCurrentLocation"
 			>
 				<i class="i-ph-map-pin-area scale-200">Current location</i>
+			</button>
+			<button
+				type="submit"
+				class="h-10 text-white border rounded-lg border px-4 hocus:(text-bg-0 bg-white) transition-colors"
+			>
+				Search
 			</button>
 			<div v-if="inputValue && open" class="relative">
 				<div class="min-w-60 w-fit border rounded-lg absolute mt-2 bg-bg-1 px-4 py-2 text-white">
@@ -57,7 +71,7 @@ const applyCurrentLocation = () => {
 					</p>
 				</div>
 			</div>
-		</div>
+		</form>
 		<WeatherDisplay :rectangle-cords="rectangleCords" />
 	</main>
 	<VueQueryDevtools />

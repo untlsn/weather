@@ -75,18 +75,22 @@ export type Parsed =  {
 
 
 export default function useSearchQuery(input: Ref<string>): UseQueryReturnType<SearchQueryResponse, Error> {
-	const inputValueDebounced = refDebounced(input, 500);
-	const url = createUrl('https://api.geoapify.com/v1/geocode/autocomplete', {
-		apiKey: import.meta.env.VITE_GEOAPI_KEY,
-		format: 'json',
-	});
+	const inputValueDebounced = refDebounced(input, 300);
 
 	return useQuery({
 		queryKey: ['geoapify', 'autocomplete', inputValueDebounced],
-		async queryFn({ queryKey: [, , text] }): Promise<SearchQueryResponse> {
-			url.searchParams.set('text', text);
-			return (await (fetch(url))).json();
+		async queryFn({ queryKey: [, , text] }) {
+			return fetchSearchQuery(text);
 		},
 		enabled: () => !!inputValueDebounced.value,
 	});
+}
+
+export async function fetchSearchQuery(text: string): Promise<SearchQueryResponse> {
+	const url = createUrl('https://api.geoapify.com/v1/geocode/autocomplete', {
+		apiKey: import.meta.env.VITE_GEOAPI_KEY,
+		format: 'json',
+		text,
+	});
+	return (await (fetch(url))).json();
 }

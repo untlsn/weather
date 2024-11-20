@@ -47,6 +47,7 @@ export default defineConfig({
 			if (!isNaN(numValue)) value = `${numValue / 4}rem`;
 			return `grid-${type}-[repeat(auto-fit,minmax(${value},1fr))]`;
 		}],
+		[/hocus:(.+)/, ([,content]) => `hover:${content} focus:${content}`],
 	],
 	presets: [
 		presetWind(),
