@@ -12,16 +12,34 @@ const open = shallowRef(false);
 onClickOutside(useTemplateRef('search'), () => {
 	open.value = false;
 });
+
+const applyCurrentLocation = () => {
+	navigator.geolocation.getCurrentPosition(({ coords: { latitude, longitude } }) => {
+		rectangleCords.value = {
+			lat1: latitude,
+			lat2: latitude,
+			lon1: longitude,
+			lon2: longitude,
+		};
+	});
+};
 </script>
 
 <template>
-	<main class="bg-bg-0 min-h-screen pb-8">
-		<div ref="search" class="p-6">
+	<main class="">
+		<div ref="search" class="w-fit absolute right-6 top-6">
 			<input
 				v-model="inputValue"
-				class="w-60 border text-white block rounded px-4 py-2"
+				class="w-60 border text-white rounded px-4 h-10"
 				@focus="open = true"
 			>
+			<button
+				type="button"
+				class="size-10 rounded-lg border text-white ml-4"
+				@click="applyCurrentLocation"
+			>
+				<i class="i-ph-map-pin-area scale-200">Current location</i>
+			</button>
 			<div v-if="inputValue && open" class="relative">
 				<div class="min-w-60 w-fit border rounded-lg absolute mt-2 bg-bg-1 px-4 py-2 text-white">
 					<button
@@ -44,3 +62,9 @@ onClickOutside(useTemplateRef('search'), () => {
 	</main>
 	<VueQueryDevtools />
 </template>
+
+<style>
+body {
+	@apply bg-bg-0 min-h-screen overflow-x-hidden
+}
+</style>
