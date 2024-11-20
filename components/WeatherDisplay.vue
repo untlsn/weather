@@ -12,7 +12,7 @@ const props = defineProps<{
 const weatherQuery = useWeatherQuery(() => props.rectangleCords);
 const location = computed(() => weatherQuery.data.value?.location);
 const current = computed(() => weatherQuery.data.value?.current);
-const forecastday = computed(() => weatherQuery.data.value?.forecast.forecastday);
+const forecastday = computed(() => weatherQuery.data.value?.forecast?.forecastday);
 
 </script>
 

@@ -154,7 +154,7 @@ export type Condition3 = {
 
 
 export default function useWeatherQuery(rectangleCords?: MaybeRefOrGetter<Bbox | undefined>): UseQueryReturnType<WeatherQueryResponse, Error> {
-	const url = createUrl('http://api.weatherapi.com/v1/forecast.json', {
+	const url = createUrl('https://api.weatherapi.com/v1/forecast.json', {
 		key:  import.meta.env.VITE_WEATHER_KEY,
 		aqi:  'no',
 		days: '7',

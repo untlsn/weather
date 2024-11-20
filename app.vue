@@ -3,7 +3,7 @@ import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 import WeatherDisplay from '~/components/WeatherDisplay.vue';
 import SearchField from '~/components/SearchField.vue';
 
-const rectangleCords = shallowRef<Bbox>();
+const rectangleCords = useSearchParam<Bbox>('cords');
 </script>
 
 <template>
