@@ -21,8 +21,10 @@
     "eslint-plugin-vue": "^9.31.0",
     "motion": "^11.11.17",
     "nuxt": "^3.14.159",
+    "nuxt-echarts": "^0.2.4",
     "radix-vue": "^1.9.10",
     "vue": "latest",
+    "vue-echarts": "^7.0.3",
     "vue-router": "latest"
   },
   "devDependencies": {

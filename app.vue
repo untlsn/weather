@@ -3,7 +3,6 @@ import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 import useSearchQuery, { type Bbox, fetchSearchQuery } from '~/composables/useSearchQuery';
 import WeatherDisplay from '~/components/WeatherDisplay.vue';
 import { onClickOutside } from '@vueuse/core';
-import wait from '~/utils/wait';
 
 const inputValue = shallowRef('');
 const searchQuery = useSearchQuery(inputValue);
@@ -27,6 +26,8 @@ const applyCurrentLocation = () => {
 const lazySelect = async () => {
 	rectangleCords.value = (await fetchSearchQuery(inputValue.value)).results[0].bbox;
 };
+
+
 </script>
 
 <template>
@@ -38,24 +39,24 @@ const lazySelect = async () => {
 		>
 			<input
 				v-model="inputValue"
-				class="w-60 border text-white rounded px-4 h-10"
+				class="w-60 border rounded px-4 h-10"
 				@focus="open = true"
 			>
 			<button
 				type="button"
-				class="size-10 rounded-lg border text-white ml-2 mr-4"
+				class="size-10 rounded-lg border ml-2 mr-4"
 				@click="applyCurrentLocation"
 			>
 				<i class="i-ph-map-pin-area scale-200">Current location</i>
 			</button>
 			<button
 				type="submit"
-				class="h-10 text-white border rounded-lg border px-4 hocus:(text-bg-0 bg-white) transition-colors"
+				class="h-10 border rounded-lg border px-4 hocus:(text-bg-0 bg-white) transition-colors"
 			>
 				Search
 			</button>
 			<div v-if="inputValue && open" class="relative">
-				<div class="min-w-60 w-fit border rounded-lg absolute mt-2 bg-bg-1 px-4 py-2 text-white">
+				<div class="min-w-60 w-fit border rounded-lg absolute mt-2 bg-bg-1 px-4 py-2">
 					<button
 						v-for="place in searchQuery.data.value?.results"
 						:key="place.place_id"
@@ -79,6 +80,6 @@ const lazySelect = async () => {
 
 <style>
 body {
-	@apply bg-bg-0 min-h-screen overflow-x-hidden
+	@apply bg-bg-0 min-h-screen overflow-x-hidden text-white
 }
 </style>

@@ -3,6 +3,7 @@ import WeatherDisplayGridBlock from '~/components/WeatherDisplayGridBlock.vue';
 import ConditionImage from '~/components/ConditionImage.vue';
 import * as date from 'date-fns';
 import type { Bbox } from '~/composables/useSearchQuery';
+import ChartComposer from '~/components/ChartComposer.vue';
 
 const props = defineProps<{
 	rectangleCords?: Bbox
@@ -11,7 +12,7 @@ const props = defineProps<{
 const weatherQuery = useWeatherQuery(() => props.rectangleCords);
 const location = computed(() => weatherQuery.data.value?.location);
 const current = computed(() => weatherQuery.data.value?.current);
-
+const forecastday = computed(() => weatherQuery.data.value?.forecast.forecastday);
 
 </script>
 
@@ -44,7 +45,7 @@ const current = computed(() => weatherQuery.data.value?.current);
 		</ul>
 		<ul class="grid grid-cols-2 md:grid-cols-12 2xl:grid-cols-7 gap-4 m-4">
 			<li
-				v-for="day in weatherQuery.data.value?.forecast.forecastday"
+				v-for="day in forecastday"
 				:key="day.date"
 				class="bg-bg-1 rounded-lg p-4 flex-(~ col) justify-between gap-2 text-center dynamic-span max-md:nth-7:(col-span-2 w-1/2 mx-auto)"
 			>
@@ -62,6 +63,7 @@ const current = computed(() => weatherQuery.data.value?.current);
 			</li>
 		</ul>
 	</article>
+	<ChartComposer v-if="forecastday" :days="forecastday" />
 </template>
 
 <style scoped>
