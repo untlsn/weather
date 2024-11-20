@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import WeatherDisplayGridBlock from '~/components/WeatherDisplayGridBlock.vue';
+import ConditionImage from '~/components/ConditionImage.vue';
+import * as date from 'date-fns';
 
 const weatherQuery = useWeatherQuery({  });
 const location = computed(() => weatherQuery.data.value?.location);
 const current = computed(() => weatherQuery.data.value?.current);
+
 
 </script>
 
@@ -13,9 +16,9 @@ const current = computed(() => weatherQuery.data.value?.current);
 			<h3 class="text-6">{{ location?.name }}</h3>
 			<h2 class="text-24">{{ current?.temp_c }}°C</h2>
 			<p class="text-6">{{ current?.condition.text }}</p>
-			<img :src="`http:${current?.condition.icon}`" alt="">
+			<ConditionImage :condition="current?.condition" />
 		</header>
-		<div class="grid-(~ cols-fit-100) gap-4 m-4">
+		<ul class="grid-(~ cols-fit-40) gap-4 m-4">
 			<WeatherDisplayGridBlock name="Wind" header-class="before:i-ph-wind">
 				<p
 					:style="`--degree: ${current?.wind_degree}deg`"
@@ -33,10 +36,36 @@ const current = computed(() => weatherQuery.data.value?.current);
 			<WeatherDisplayGridBlock name="UV" header-class="before:i-ph-sun">
 				{{ current?.uv }}
 			</WeatherDisplayGridBlock>
-		</div>
+		</ul>
+		<ul class="grid grid-cols-2 md:grid-cols-12 2xl:grid-cols-7 gap-4 m-4">
+			<li
+				v-for="day in weatherQuery.data.value?.forecast.forecastday"
+				:key="day.date"
+				class="bg-bg-1 rounded-lg p-4 text-center dynamic-span max-md:nth-7:(col-span-2 w-1/2 mx-auto)"
+			>
+				<p class="font-semibold">
+					{{ date.format(day.date, 'EEEE') }}
+					<i v-if="date.isToday(day.date)" class="font-400">
+						(today)
+					</i>
+				</p>
+				<div class="flex justify-evenly items-center">
+					<p class="text-8">{{ day.day.avgtemp_c }}°C</p>
+					<ConditionImage :condition="day.day.condition" />
+				</div>
+				<p class="">{{ current?.condition.text }}</p>
+			</li>
+		</ul>
 	</article>
 </template>
 
 <style scoped>
-
+@media (min-width: 768px) and (max-width: 1535px) {
+	.dynamic-span {
+		grid-column: span 4/span 4;
+	}
+	.dynamic-span:nth-child(-n+4) {
+		grid-column: span 3/span 3;
+	}
+}
 </style>

@@ -24,6 +24,18 @@ export default defineConfig({
 			},
 		},
 	},
+	variants: [
+		(matcher) => {
+			if (!matcher.startsWith('nth-')) return matcher;
+			let number = matcher.slice(4, matcher.indexOf(':'));
+			if (number[0] == '[' && number[number.length - 1] == ']') number = number.slice(1, -1);
+
+			return {
+				matcher:  matcher.slice(matcher.indexOf(':') + 1),
+				selector: (s) => `${s}:nth-child(${number})`,
+			};
+		},
+	],
 	rules: [
 		// Use non-breaking-space as content. Useful for icons
 		['c_', { content: '"\xA0"' }],

@@ -159,7 +159,6 @@ export default function useWeatherQuery(rectangleCords?: MaybeRefOrGetter<Bbox>)
 		key:  import.meta.env.VITE_WEATHER_KEY,
 		aqi:  'no',
 		days: '7',
-		lang: 'pl',
 	});
 
 	return useQuery({

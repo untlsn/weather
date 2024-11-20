@@ -78,8 +78,6 @@ export default function useSearchQuery(input: Ref<string>): UseQueryReturnType<S
 	const inputValueDebounced = refDebounced(input, 500);
 	const url = new URL('https://api.geoapify.com/v1/geocode/autocomplete');
 	url.searchParams.set('apiKey', import.meta.env.VITE_GEOAPI_KEY);
-	url.searchParams.set('lang', 'pl');
-	url.searchParams.set('filter', 'countrycode:pl');
 	url.searchParams.set('format', 'json');
 
 	return useQuery({
