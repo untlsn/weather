@@ -7,24 +7,17 @@ import { GridComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import * as date from 'date-fns';
 import ChartComposerRadioOption from '~/components/ChartComposerRadioOption.vue';
-
-use([GridComponent, LineChart, CanvasRenderer]);
-
-provide(THEME_KEY, 'dark');
+import useChartMode from '~/composables/useChartMode';
 
 const props = defineProps<{
 	days: Forecastday[],
 }>();
-type ECOption = ComposeOption<GridComponentOption>;
-type Mode = 'temp' | 'wind' | 'humidity' | 'uv';
-const currentMode = shallowRef<Mode>('temp');
 
-const modeToKey = {
-	temp:     'avgtemp_c',
-	wind:     'maxwind_kph',
-	humidity: 'avghumidity',
-	uv:       'uv',
-} satisfies Record<Mode, keyof Day>;
+use([GridComponent, LineChart, CanvasRenderer]);
+provide(THEME_KEY, 'dark');
+type ECOption = ComposeOption<GridComponentOption>;
+
+const mode = useChartMode();
 
 const options = computed((): ECOption => ({
 	backgroundColor: '#2D4EA419',
@@ -34,20 +27,11 @@ const options = computed((): ECOption => ({
 	},
 	yAxis: {
 		type:      'value',
-		axisLabel: {
-			formatter(value) {
-				switch (currentMode.value) {
-					case 'temp': return `${value} °C`;
-					case 'wind': return `${value} km/h`;
-					case 'humidity': return `${value}%`;
-					default: return String(value);
-				}
-			},
-		},
+		axisLabel: { formatter: mode.format },
 	},
 	series: [
 		{
-			data:   props.days.map((day) => day.day[modeToKey[currentMode.value]]),
+			data:   props.days.map((day) => day.day[mode.key]),
 			type:   'line',
 			smooth: true,
 		},
@@ -57,11 +41,17 @@ const options = computed((): ECOption => ({
 
 <template>
 	<article class="m-4">
-		<h2 class="text-8 font-bold mb-4">Change over time</h2>
-		<RadioGroupRoot v-model="currentMode" class="flex gap-4 justify-center">
+		<h2 class="text-8 mb-4">Change over time: <b>{{ mode.name }}</b></h2>
+		<RadioGroupRoot v-model="mode.current" class="flex gap-4 justify-center">
+			<ChartComposerRadioOption value="min-temp" icon="i-ph-snowflake" />
+			<ChartComposerRadioOption value="max-temp" icon="i-ph-flame" />
 			<ChartComposerRadioOption value="temp" icon="i-ph-thermometer-simple" />
-			<ChartComposerRadioOption value="wind" icon="i-ph-wind" />
+			<Separator />
 			<ChartComposerRadioOption value="humidity" icon="i-ph-drop" />
+			<ChartComposerRadioOption value="rain" icon="i-ph-cloud-rain" />
+			<ChartComposerRadioOption value="snow" icon="i-ph-cloud-snow" />
+			<Separator />
+			<ChartComposerRadioOption value="wind" icon="i-ph-wind" />
 			<ChartComposerRadioOption value="uv" icon="i-ph-sun" />
 		</RadioGroupRoot>
 		<vChart class="w-full h-100 rounded-lg shadow-lg" :option="options" />
