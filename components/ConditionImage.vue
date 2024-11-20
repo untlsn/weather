@@ -5,7 +5,7 @@ defineProps<{ condition?: Condition }>();
 </script>
 
 <template>
-	<img :src="`http:${condition?.icon}`" :alt="condition?.text">
+	<img v-if="condition" :src="`http:${condition.icon}`" :alt="condition.text">
 </template>
 
 <style scoped>

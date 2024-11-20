@@ -19,7 +19,7 @@ const current = computed(() => weatherQuery.data.value?.current);
 	<article class="text-white">
 		<header class="m-12 sm:grid-(~ cols-2) w-fit gap-x-24">
 			<h3 class="col-start-1 text-6">{{ location?.name }}</h3>
-			<h2 class="col-start-1 text-24">{{ current?.temp_c }}°C</h2>
+			<h2 class="col-start-1 text-24">{{ current?.temp_c || '-' }}°C</h2>
 			<p class="col-start-1 text-6">{{ current?.condition.text }}</p>
 			<ConditionImage class="col-start-2 row-start-1 row-end-3 h-full min-h-32 mx-auto" :condition="current?.condition" />
 		</header>
@@ -29,17 +29,17 @@ const current = computed(() => weatherQuery.data.value?.current);
 					:style="`--degree: ${current?.wind_degree}deg`"
 					class="before:(c_ i-ph-arrow-up-bold rotate-[--degree] scale-150 mr-2) font-semibold"
 				>
-					{{ current?.wind_kph }} km/h
+					{{ current?.wind_kph || '-' }} km/h
 				</p>
 			</WeatherDisplayGridBlock>
 			<WeatherDisplayGridBlock name="Pressure" header-class="before:i-ph-arrows-in-simple">
-				{{ current?.pressure_mb }} mb
+				{{ current?.pressure_mb || '-' }} mb
 			</WeatherDisplayGridBlock>
 			<WeatherDisplayGridBlock name="Humidity" header-class="before:i-ph-drop">
-				{{ current?.humidity }}%
+				{{ current?.humidity || '-' }}%
 			</WeatherDisplayGridBlock>
 			<WeatherDisplayGridBlock name="UV" header-class="before:i-ph-sun">
-				{{ current?.uv }}
+				{{ current?.uv || '-' }}
 			</WeatherDisplayGridBlock>
 		</ul>
 		<ul class="grid grid-cols-2 md:grid-cols-12 2xl:grid-cols-7 gap-4 m-4">
