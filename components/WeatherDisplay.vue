@@ -2,8 +2,13 @@
 import WeatherDisplayGridBlock from '~/components/WeatherDisplayGridBlock.vue';
 import ConditionImage from '~/components/ConditionImage.vue';
 import * as date from 'date-fns';
+import type { Bbox } from '~/composables/useSearchQuery';
 
-const weatherQuery = useWeatherQuery({  });
+const props = defineProps<{
+	rectangleCords?: Bbox
+}>();
+
+const weatherQuery = useWeatherQuery(() => props.rectangleCords);
 const location = computed(() => weatherQuery.data.value?.location);
 const current = computed(() => weatherQuery.data.value?.current);
 
@@ -12,11 +17,11 @@ const current = computed(() => weatherQuery.data.value?.current);
 
 <template>
 	<article class="text-white">
-		<header class="m-12">
-			<h3 class="text-6">{{ location?.name }}</h3>
-			<h2 class="text-24">{{ current?.temp_c }}°C</h2>
-			<p class="text-6">{{ current?.condition.text }}</p>
-			<ConditionImage :condition="current?.condition" />
+		<header class="m-12 sm:grid-(~ cols-2) w-fit gap-x-24">
+			<h3 class="col-start-1 text-6">{{ location?.name }}</h3>
+			<h2 class="col-start-1 text-24">{{ current?.temp_c }}°C</h2>
+			<p class="col-start-1 text-6">{{ current?.condition.text }}</p>
+			<ConditionImage class="col-start-2 row-start-1 row-end-3 h-full min-h-32 mx-auto" :condition="current?.condition" />
 		</header>
 		<ul class="grid-(~ cols-fit-40) gap-4 m-4">
 			<WeatherDisplayGridBlock name="Wind" header-class="before:i-ph-wind">
@@ -41,7 +46,7 @@ const current = computed(() => weatherQuery.data.value?.current);
 			<li
 				v-for="day in weatherQuery.data.value?.forecast.forecastday"
 				:key="day.date"
-				class="bg-bg-1 rounded-lg p-4 text-center dynamic-span max-md:nth-7:(col-span-2 w-1/2 mx-auto)"
+				class="bg-bg-1 rounded-lg p-4 flex-(~ col) justify-between gap-2 text-center dynamic-span max-md:nth-7:(col-span-2 w-1/2 mx-auto)"
 			>
 				<p class="font-semibold">
 					{{ date.format(day.date, 'EEEE') }}
@@ -53,7 +58,7 @@ const current = computed(() => weatherQuery.data.value?.current);
 					<p class="text-8">{{ day.day.avgtemp_c }}°C</p>
 					<ConditionImage :condition="day.day.condition" />
 				</div>
-				<p class="">{{ current?.condition.text }}</p>
+				<p>{{ current?.condition.text }}</p>
 			</li>
 		</ul>
 	</article>

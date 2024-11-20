@@ -1,6 +1,5 @@
-import { useQuery, type UseQueryReturnType } from '@tanstack/vue-query';
+import { keepPreviousData, useQuery, type UseQueryReturnType } from '@tanstack/vue-query';
 import type { Bbox } from '~/composables/useSearchQuery';
-import weatherMock from '~/data/weather-mock';
 import createUrl from '~/utils/createUrl';
 
 export type WeatherQueryResponse = {
@@ -154,7 +153,7 @@ export type Condition3 = {
 };
 
 
-export default function useWeatherQuery(rectangleCords?: MaybeRefOrGetter<Bbox>): UseQueryReturnType<WeatherQueryResponse, Error> {
+export default function useWeatherQuery(rectangleCords?: MaybeRefOrGetter<Bbox | undefined>): UseQueryReturnType<WeatherQueryResponse, Error> {
 	const url = createUrl('http://api.weatherapi.com/v1/forecast.json', {
 		key:  import.meta.env.VITE_WEATHER_KEY,
 		aqi:  'no',
@@ -164,13 +163,13 @@ export default function useWeatherQuery(rectangleCords?: MaybeRefOrGetter<Bbox>)
 	return useQuery({
 		queryKey: computed(() => ['weatherapi', 'forecast', toValue(rectangleCords)!] as const),
 		async queryFn({ queryKey: [,, { lon1, lat1, lat2, lon2 }] }): Promise<WeatherQueryResponse> {
-			return weatherMock;
 			const lon = (lon1 + lon2) / 2;
 			const lat = (lat1 + lat2) / 2;
 
 			url.searchParams.set('q', `${lat},${lon}`);
 			return (await (fetch(url))).json();
 		},
-		enabled: () => !!toValue(rectangleCords),
+		enabled:         () => !!toValue(rectangleCords),
+		placeholderData: keepPreviousData,
 	});
 }

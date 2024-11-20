@@ -76,9 +76,10 @@ export type Parsed =  {
 
 export default function useSearchQuery(input: Ref<string>): UseQueryReturnType<SearchQueryResponse, Error> {
 	const inputValueDebounced = refDebounced(input, 500);
-	const url = new URL('https://api.geoapify.com/v1/geocode/autocomplete');
-	url.searchParams.set('apiKey', import.meta.env.VITE_GEOAPI_KEY);
-	url.searchParams.set('format', 'json');
+	const url = createUrl('https://api.geoapify.com/v1/geocode/autocomplete', {
+		apiKey: import.meta.env.VITE_GEOAPI_KEY,
+		format: 'json',
+	});
 
 	return useQuery({
 		queryKey: ['geoapify', 'autocomplete', inputValueDebounced],
