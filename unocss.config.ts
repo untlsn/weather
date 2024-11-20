@@ -17,13 +17,25 @@ export default defineConfig({
 			// Default highest z-index
 			top: 999,
 		},
-		colors: {},
+		colors: {
+			bg: {
+				0: '#141E51',
+				1: '#2D4EA4',
+			},
+		},
 	},
 	rules: [
 		// Use non-breaking-space as content. Useful for icons
 		['c_', { content: '"\xA0"' }],
 	],
-	shortcuts: [],
+	shortcuts: [
+		/** grid-cols-fit-100 -> grid-template-columns: repeat(auto-fit, minmax(400, 1fr)); */
+		[/^grid-(cols|rows)-fit-(\S+)$/, ([, type, value]) => {
+			const numValue = Number(value);
+			if (!isNaN(numValue)) value = `${numValue / 4}rem`;
+			return `grid-${type}-[repeat(auto-fit,minmax(${value},1fr))]`;
+		}],
+	],
 	presets: [
 		presetWind(),
 		presetUno(),

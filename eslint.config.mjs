@@ -9,6 +9,12 @@ export default withNuxt({
 			singleline: { max: 3 },
 			multiline:  { max: 1 },
 		}],
+		'vue/html-indent': [1, 'tab', {
+			attribute:    1,
+			baseIndent:   1,
+			closeBracket: 0,
+		}],
+		'vue/mustache-interpolation-spacing':                1,
 		'prefer-const':                                      1,
 		'space-infix-ops':                                   1,
 		'no-console':                                        [1, { allow: ['warn', 'error'] }],

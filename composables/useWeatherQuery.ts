@@ -1,5 +1,7 @@
 import { useQuery, type UseQueryReturnType } from '@tanstack/vue-query';
 import type { Bbox } from '~/composables/useSearchQuery';
+import weatherMock from '~/data/weather-mock';
+import createUrl from '~/utils/createUrl';
 
 export type WeatherQueryResponse = {
 	location: Location
@@ -151,24 +153,19 @@ export type Condition3 = {
 	code: number
 };
 
-export type Values = {
-	'forecast.forecastday.1.hour.11.temp_c':      string[]
-	'forecast.forecastday.1.hour.11.heatindex_c': string[]
-	'forecast.forecastday.3.day.maxtemp_c':       string[]
-	'forecast.forecastday.3.hour.6.temp_c':       string[]
-	'forecast.forecastday.3.hour.6.heatindex_c':  string[]
-};
-
 
 export default function useWeatherQuery(rectangleCords?: MaybeRefOrGetter<Bbox>): UseQueryReturnType<WeatherQueryResponse, Error> {
-	const url = new URL('http://api.weatherapi.com/v1/forecast.json');
-	url.searchParams.set('key', import.meta.env.VITE_WEATHER_KEY);
-	url.searchParams.set('aqi', 'no');
-	url.searchParams.set('days', '7');
+	const url = createUrl('http://api.weatherapi.com/v1/forecast.json', {
+		key:  import.meta.env.VITE_WEATHER_KEY,
+		aqi:  'no',
+		days: '7',
+		lang: 'pl',
+	});
 
 	return useQuery({
 		queryKey: computed(() => ['weatherapi', 'forecast', toValue(rectangleCords)!] as const),
 		async queryFn({ queryKey: [,, { lon1, lat1, lat2, lon2 }] }): Promise<WeatherQueryResponse> {
+			return weatherMock;
 			const lon = (lon1 + lon2) / 2;
 			const lat = (lat1 + lat2) / 2;
 

@@ -1,16 +1,15 @@
 <script lang="ts" setup>
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 import useSearchQuery from '~/composables/useSearchQuery';
+import WeatherDisplay from '~/components/WeatherDisplay.vue';
 
 
 const inputValue = shallowRef('');
 const searchQuery = useSearchQuery(inputValue);
-const weatherQuery = useWeatherQuery({ lon1: 20.6484062, lat1: 49.5549437, lon2: 20.7648749, lat2: 49.6655553 });
-
 </script>
 
 <template>
-  <main>
+	<main class="bg-bg-0 min-h-screen">
 		<div>
 			<input v-model="inputValue" type="text">
 			<ul>
@@ -19,6 +18,7 @@ const weatherQuery = useWeatherQuery({ lon1: 20.6484062, lat1: 49.5549437, lon2:
 				</li>
 			</ul>
 		</div>
+		<WeatherDisplay />
 	</main>
 	<VueQueryDevtools />
 </template>
