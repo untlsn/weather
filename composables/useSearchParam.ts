@@ -9,7 +9,7 @@ export default function useSearchParam<T>(key: string): WritableComputedRef<T> {
 			return value ? JSON.parse(String(route.query[key])) : undefined;
 		},
 		set(value) {
-			void router.replace({ query: { [key]: value } });
+			void router.replace({ query: { [key]: JSON.stringify(value) } });
 		},
 	});
 }
